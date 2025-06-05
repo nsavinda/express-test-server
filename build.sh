@@ -2,4 +2,5 @@
 
 pnpm install
 pnpm install
+pwd
 pnpm build
