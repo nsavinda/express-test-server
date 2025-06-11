@@ -1,19 +1,28 @@
-# Dockerfile
-FROM node:20
+FROM node:18 AS base
 
-# Create app directory
 WORKDIR /app
 
 # Install pnpm
 RUN npm install -g pnpm
 
-# Copy files
+# Only copy lock file first to leverage Docker cache
+COPY pnpm-lock.yaml ./
+COPY package.json ./
+
+# Install deps
+RUN pnpm install --frozen-lockfile
+
+# Copy the rest of the code
 COPY . .
 
-# Install and build
-RUN pnpm install --frozen-lockfile
+# Build
 RUN pnpm build
 
-# Expose and run
+# Final image
+FROM node:18
+
+WORKDIR /app
+COPY --from=base /app .
+
 EXPOSE 3000
 CMD ["node", "dist/index.js"]
