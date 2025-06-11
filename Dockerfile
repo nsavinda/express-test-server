@@ -11,7 +11,7 @@ RUN npm install -g pnpm
 COPY . .
 
 # Install and build
-RUN pnpm install
+RUN pnpm install --frozen-lockfile
 RUN pnpm build
 
 # Expose and run
